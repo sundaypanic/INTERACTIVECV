@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sundaypanic | Music Producer & Sound Engineer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --bg-color: #050a14;
+            --text-color: #e0e6ed;
+            --accent-cyan: #00f3ff;
+            --accent-magenta: #ff00ff;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --border-glow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+            cursor: crosshair; /* Tech cursor */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; cursor: pointer; }
+        ul { list-style: none; }
+
+        /* --- DYNAMIC BACKGROUND --- */
+        #particles-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none; overflow: hidden;
+        }
+
+        .floating-note {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.05);
+            font-size: 20px;
+            user-select: none;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.3; }
+            80% { opacity: 0.3; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- NAV --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(5, 10, 20, 0.9);
+            backdrop-filter: blur(15px);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo {
+            font-family: 'Orbitron';
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+        }
+
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a:hover { color: var(--accent-cyan); text-shadow: 0 0 8px var(--accent-cyan); }
+
+        /* --- HERO --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 20px 50px 20px;
+            position: relative;
+        }
+
+        /* EQUALIZER */
+        .equalizer {
+            display: flex; gap: 5px; height: 30px; align-items: flex-end; margin-bottom: 20px;
+        }
+        .bar { width: 6px; background: var(--accent-cyan); animation: equalize 0.8s infinite ease-in-out alternate; }
+        .bar:nth-child(2) { animation-delay: 0.1s; background: var(--accent-magenta); }
+        .bar:nth-child(3) { animation-delay: 0.3s; }
+        .bar:nth-child(4) { animation-delay: 0.2s; background: var(--accent-magenta); }
+        .bar:nth-child(5) { animation-delay: 0.4s; }
+        @keyframes equalize {
+            0% { height: 5px; opacity: 0.5; }
+            100% { height: 30px; opacity: 1; box-shadow: 0 0 10px var(--accent-cyan); }
+        }
+
+        .glitch-wrapper { position: relative; margin-bottom: 20px; }
+        .hero h1 {
+            font-size: 5rem; line-height: 1; color: #fff;
+            text-shadow: 2px 2px var(--accent-magenta), -2px -2px var(--accent-cyan);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+        @media (max-width: 768px) { .hero h1 { font-size: 3rem; } }
+
+        .bio-text {
+            max-width: 800px; margin: 20px auto 40px auto; color: #ccc; font-size: 1.1rem;
+            text-align: center; background: linear-gradient(90deg, transparent, rgba(0,0,0,0.5), transparent);
+            padding: 20px; border-top: 1px solid rgba(0, 243, 255, 0.1); border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .cta-btn {
+            padding: 15px 40px; background: transparent; border: 2px solid var(--accent-cyan);
+            color: var(--accent-cyan); font-family: 'Orbitron'; font-weight: bold; cursor: pointer;
+            position: relative; overflow: hidden; transition: 0.4s; display: inline-block; z-index: 10;
+        }
+        .cta-btn:hover { background: var(--accent-cyan); color: var(--bg-color); box-shadow: 0 0 30px var(--accent-cyan); }
+
+        /* --- METRICS --- */
+        .metrics-bar {
+            display: flex; justify-content: space-around; padding: 40px 10%;
+            background: rgba(255, 255, 255, 0.02); border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05); flex-wrap: wrap; gap: 20px;
+        }
+        .metric { text-align: center; transition: 0.3s; }
+        .metric:hover { transform: scale(1.1); text-shadow: 0 0 15px var(--accent-magenta); }
+        .metric h3 { font-size: 2.5rem; color: var(--accent-magenta); margin-bottom: 5px; }
+        .metric p { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: #aaa; }
+
+        /* --- SECTIONS --- */
+        section { padding: 80px 10%; position: relative; }
+        .section-title { font-size: 2.5rem; margin-bottom: 50px; border-left: 5px solid var(--accent-cyan); padding-left: 20px; }
+
+        /* --- PROJECTS --- */
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .project-card {
+            background: var(--glass-bg); border: 1px solid rgba(255, 255, 255, 0.1); padding: 30px;
+            border-radius: 4px; transition: 0.4s; position: relative; overflow: hidden;
+        }
+        .project-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent); transition: 0.5s;
+        }
+        .project-card:hover::before { left: 100%; }
+        .project-card:hover { transform: translateY(-5px); border-color: var(--accent-cyan); box-shadow: 0 10px 40px rgba(0, 243, 255, 0.1); }
+        .project-card h3 { font-size: 1.5rem; margin-bottom: 10px; }
+        .project-meta { color: var(--accent-magenta); font-weight: 700; font-size: 0.85rem; margin-bottom: 15px; display: block; letter-spacing: 1px; }
+        .project-desc { font-size: 0.95rem; color: #bbb; margin-bottom: 25px; }
+        .project-links a { font-size: 0.8rem; margin-right: 20px; color: #fff; border-bottom: 1px solid var(--accent-cyan); padding-bottom: 2px; }
+        .project-links a:hover { color: var(--accent-cyan); }
+
+        /* --- SKILLS --- */
+        .skills-container { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
+        @media (max-width: 768px) { .skills-container { grid-template-columns: 1fr; } }
+        .skill-group h4 { margin-bottom: 25px; color: var(--accent-cyan); letter-spacing: 1px; }
+        .skill-tag {
+            display: inline-block; padding: 10px 20px; margin: 0 10px 15px 0;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem; transition: 0.3s; cursor: default;
+        }
+        .skill-tag:hover { border-color: var(--accent-magenta); background: rgba(255, 0, 255, 0.1); transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 0, 255, 0.3); }
+
+        /* --- CONTACT --- */
+        .contact { text-align: center; background: linear-gradient(to top, #000, var(--bg-color)); padding-bottom: 100px; }
+        .contact-details { display: flex; flex-direction: column; gap: 15px; margin: 30px 0; font-size: 1.2rem; color: #fff; }
+        .contact-item a:hover { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
+        .social-links { display: flex; justify-content: center; gap: 40px; margin-top: 40px; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* --- RIPPLE --- */
+        .ripple {
+            position: absolute; border-radius: 50%; border: 2px solid var(--accent-cyan);
+            transform: scale(0); animation: ripple-anim 0.6s linear; pointer-events: none; z-index: 9999;
+        }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; border-width: 0; } }
+
+        /* --- TERMINAL STYLES --- */
+        .terminal-toggle {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: rgba(0, 0, 0, 0.9); border: 2px solid var(--accent-cyan); border-radius: 50%;
+            color: var(--accent-cyan); font-family: 'Courier New', monospace; font-weight: bold; font-size: 1.4rem;
+            display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10001;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); animation: pulse-glow 2s infinite;
+        }
+        .terminal-toggle:hover { background: var(--accent-cyan); color: #000; animation: none; transform: scale(1.1); }
+        
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(0, 243, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0); }
+        }
+
+        #terminal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); z-index: 10002;
+            display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        #terminal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .terminal-window {
+            width: 700px; height: 500px; background: #0c0c0c; border: 1px solid #333; border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0,243,255,0.15); display: flex; flex-direction: column;
+            font-family: 'Courier New', monospace; overflow: hidden;
+        }
+        .terminal-header { background: #1a1a1a; padding: 10px; display: flex; align-items: center; border-bottom: 1px solid #333; }
+        .red-dot, .yellow-dot, .green-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+        .red-dot { background: #ff5f56; } .yellow-dot { background: #ffbd2e; } .green-dot { background: #27c93f; }
+        .terminal-title { margin-left: 10px; color: #999; font-size: 0.8rem; flex-grow: 1; }
+        .close-btn { color: #666; cursor: pointer; font-weight: bold; padding: 0 10px; }
+        .close-btn:hover { color: #fff; }
+
+        .terminal-body { padding: 20px; color: #0f0; flex-grow: 1; overflow-y: auto; font-size: 0.95rem; }
+        .input-line { display: flex; margin-top: 10px; }
+        .prompt { color: var(--accent-magenta); margin-right: 10px; }
+        #cmd-input { background: transparent; border: none; color: #fff; font-family: 'Courier New', monospace; flex-grow: 1; outline: none; font-size: 1rem; }
+
+        .dev-hint {
+            position: absolute; bottom: 10px; width: 100%; text-align: center;
+            font-size: 0.7rem; color: #555; font-family: 'Courier New', monospace; letter-spacing: 2px;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes glitch-anim {
+            0% { text-shadow: 2px 2px var(--accent-magenta), -2px -2px var(--accent-cyan); }
+            25% { text-shadow: -2px -2px var(--accent-magenta), 2px 2px var(--accent-cyan); }
+            50% { text-shadow: 2px -2px var(--accent-magenta), -2px 2px var(--accent-cyan); }
+            75% { text-shadow: -2px 2px var(--accent-magenta), 2px -2px var(--accent-cyan); }
+            100% { text-shadow: 2px 2px var(--accent-magenta), -2px -2px var(--accent-cyan); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particles-container"></div>
+
+    <div class="terminal-toggle" onclick="toggleTerminal()" title="Open Dev Terminal">>_</div>
+
+    <div id="terminal-overlay">
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <span class="red-dot"></span>
+                <span class="yellow-dot"></span>
+                <span class="green-dot"></span>
+                <span class="terminal-title">sundaypanic@root:~ (DEV MODE)</span>
+                <span class="close-btn" onclick="toggleTerminal()">X</span>
+            </div>
+            <div class="terminal-body" id="terminal-content">
+                <div class="output">
+                    SUNDAYPANIC SYSTEM v1.0 [Protected]<br>
+                    Connected. Type 'help' to see available commands.<br><br>
+                </div>
+                <div class="input-line">
+                    <span class="prompt">user@sundaypanic:~$</span>
+                    <input type="text" id="cmd-input" autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">SUNDAYPANIC</div>
+        <div class="nav-links">
+            <a href="#projects">Projects</a>
+            <a href="#skills">Skills</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="equalizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+
+        <div class="glitch-wrapper">
+            <h1>SUNDAYPANIC</h1>
+        </div>
+        <p style="letter-spacing: 3px; color: var(--accent-cyan);">MUSIC PRODUCER & SOUND ENGINEER</p>
+        
+        <div class="bio-text">
+            <p>
+                Music Producer with extensive experience in creation, mixing, and sound direction within urban & electronic genres. 
+                I have worked for years in the studio developing high-level projects, optimizing recording processes, and elevating the artistic quality of every production. 
+                Specialized in modern sound, advanced sound design, and efficient digital workflows. 
+                Results-oriented, with a clear focus on delivering competitive, market-ready productions.
+            </p>
+        </div>
+
+        <a href="#projects" class="cta-btn">LISTEN TO WORK</a>
+    </header>
+
+    <div class="metrics-bar">
+        <div class="metric">
+            <h3>+100M</h3>
+            <p>Total Streams</p>
+        </div>
+        <div class="metric">
+            <h3>1</h3>
+            <p>Platinum Record</p>
+        </div>
+        <div class="metric">
+            <h3>1</h3>
+            <p>Gold Record</p>
+        </div>
+        <div class="metric">
+            <h3>+15</h3>
+            <p>Years Experience</p>
+        </div>
+    </div>
+
+    <section id="projects">
+        <h2 class="section-title">SELECTED WORKS</h2>
+        <div class="projects-grid">
+            
+            <div class="project-card">
+                <h3>Tuenti Remix</h3>
+                <span class="project-meta">ft. Raul Clyde & Saiko | PLATINUM RECORD 💿</span>
+                <p class="project-desc">Producer, Mixing & Mastering Engineer. A massive hit with over 100 million digital streams.</p>
+                <div class="project-links">
+                    <a href="https://www.youtube.com/watch?v=yxZq841nc6U" target="_blank">▶ YouTube</a>
+                    <a href="https://open.spotify.com/intl-es/track/1ZkIxbmM3ZUhn2OayBdwe5?si=9af2b97968c24ca5" target="_blank">🎧 Spotify</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>Nuestro Destino</h3>
+                <span class="project-meta">ft. Kinky Bwoy & Yessia | GOLD RECORD 📀</span>
+                <p class="project-desc">Producer, Mixing & Mastering Engineer. Established production with over 20 million streams, defining the melodic urban sound.</p>
+                <div class="project-links">
+                    <a href="https://www.youtube.com/watch?v=Qp-wPTIP2LQ" target="_blank">▶ YouTube</a>
+                    <a href="https://open.spotify.com/intl-es/track/3i0PltDUHPXf5KTkuuJiLn?si=a09f281317824c86" target="_blank">🎧 Spotify</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>Alba</h3>
+                <span class="project-meta">ft. Yung Sarria</span>
+                <p class="project-desc">Producer, Mixing & Mastering Engineer. Innovative sound design with over 2 million streams.</p>
+                <div class="project-links">
+                    <a href="https://www.youtube.com/watch?v=tmaEgjH0Tik" target="_blank">▶ YouTube</a>
+                    <a href="https://open.spotify.com/intl-es/track/0KTEorShLm7HHXqyJpLPg3?si=cdfee1ba6b824ce5" target="_blank">🎧 Spotify</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="skills">
+        <h2 class="section-title">TECHNICAL ARSENAL</h2>
+        <div class="skills-container">
+            <div class="skill-group">
+                <h4>SOFTWARE SPECIALIZATION</h4>
+                <div class="skill-tag">Ableton Live (Expert)</div>
+                <div class="skill-tag">Pro Tools</div>
+                <div class="skill-tag">iZotope RX</div>
+                <div class="skill-tag">VST/VST3 Plugins</div>
+            </div>
+            <div class="skill-group">
+                <h4>ENGINEERING & SKILLS</h4>
+                <div class="skill-tag">Artificial Intelligence (AI)</div>
+                <div class="skill-tag">Robotics</div>
+                <div class="skill-tag">Automation</div>
+                <div class="skill-tag">Advanced Mixing</div>
+                <div class="skill-tag">Mastering</div>
+                <div class="skill-tag">Vocal Production</div>
+                <div class="skill-tag">Sound Design</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <h2 class="section-title" style="border:none; padding:0; margin-bottom: 20px;">LET'S WORK</h2>
+        <p style="max-width: 600px; margin: 0 auto 30px auto; color: #888;">
+            Ready to create the next hit.
+        </p>
+        
+        <div class="contact-details">
+            <div class="contact-item">
+                📧 <a href="mailto:sundaypanicprods@gmail.com">sundaypanicprods@gmail.com</a>
+            </div>
+            <div class="contact-item">
+                📱 <a href="tel:+34625732331">+34 625 73 23 31</a>
+            </div>
+        </div>
+
+        <div class="social-links">
+            <a href="https://twitter.com/sundaypanic" target="_blank">Twitter</a>
+            <a href="https://instagram.com/sundaypanic" target="_blank">Instagram</a>
+           
+        </div>
+
+        <div class="dev-hint">[TERMINAL ACCESS AVAILABLE - PRESS >_]</div>
+    </section>
+
+    <script>
+        // 1. TERMINAL LOGIC (THE BRAIN OF THE EASTER EGG)
+        const terminalOverlay = document.getElementById('terminal-overlay');
+        const cmdInput = document.getElementById('cmd-input');
+        const terminalContent = document.querySelector('.output');
+
+        function toggleTerminal() {
+            terminalOverlay.classList.toggle('active');
+            if (terminalOverlay.classList.contains('active')) {
+                cmdInput.focus();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && terminalOverlay.classList.contains('active')) {
+                toggleTerminal();
+            }
+        });
+
+        cmdInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const command = cmdInput.value.toLowerCase().trim();
+                let response = '';
+
+                terminalContent.innerHTML += `<div><span style="color:#ff00ff">user@sundaypanic:~$</span> ${command}</div>`;
+
+                switch(command) {
+                    case 'help':
+                        response = 'Available commands:<br>- <span style="color:#00f3ff">about</span>: Tech Bio<br>- <span style="color:#00f3ff">contact</span>: Contact Data<br>- <span style="color:#00f3ff">mars</span>: Classified Message (Top Secret)<br>- <span style="color:#00f3ff">clear</span>: Clear screen';
+                        break;
+                    case 'about':
+                        response = 'Sundaypanic: Audio Engineer fusing human creativity with algorithmic precision. Specialist in AI & Sound Design.';
+                        break;
+                    case 'contact':
+                        response = 'Email: sundaypanicprods@gmail.com<br>Phone: +34 625 73 23 31';
+                        break;
+                    case 'mars':
+                    case 'elon':
+                    case 'spacex':
+                        response = '<span style="color:yellow; font-weight:bold;">⚠️ ACCESS GRANTED ⚠️</span><br><br>System ready for interplanetary deployment.<br>Soundtrack ready for Mars colonization. 🚀<br>Awaiting orders, Mr. Musk.<br><br>Status: <span style="color:#00f3ff">OPERATIONAL</span>';
+                        break;
+                    case 'clear':
+                        terminalContent.innerHTML = 'SUNDAYPANIC SYSTEM v1.0 [Protected]<br>';
+                        response = '';
+                        break;
+                    default:
+                        response = `Command not recognized: ${command}. Type 'help'.`;
+                }
+
+                if (response) {
+                    terminalContent.innerHTML += `<div style="color:#ccc; margin-bottom:10px;">${response}</div>`;
+                }
+                
+                cmdInput.value = '';
+                document.getElementById('terminal-content').scrollTop = document.getElementById('terminal-content').scrollHeight;
+            }
+        });
+
+        // 2. RIPPLE EFFECT
+        document.addEventListener('click', (e) => {
+            // Prevent ripple when clicking terminal elements
+            if(e.target.closest('.terminal-window') || e.target.closest('.terminal-toggle')) return;
+
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = e.pageX + 'px';
+            ripple.style.top = e.pageY + 'px';
+            document.body.appendChild(ripple);
+            setTimeout(() => { ripple.remove(); }, 600);
+        });
+
+        // 3. BACKGROUND PARTICLES
+        const particlesContainer = document.getElementById('particles-container');
+        const symbols = ['♪', '♫', '♩', '♬', '♭', '♮', '∿', '⚡'];
+        
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'floating-note';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+            const duration = Math.random() * 5 + 5; 
+            particle.style.animationDuration = duration + 's';
+            particlesContainer.appendChild(particle);
+            setTimeout(() => { particle.remove(); }, duration * 1000);
+        }
+        setInterval(createParticle, 500);
+
+        // 4. SCROLL REVEAL
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.project-card').forEach((el, index) => {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(50px)';
+            el.style.transition = `all 0.6s ease-out ${index * 0.2}s`;
+            observer.observe(el);
+        });
+
+        // 5. PARALLAX
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth - e.pageX) / 50;
+            const y = (window.innerHeight - e.pageY) / 50;
+            const title = document.querySelector('.hero h1');
+            if(title) title.style.transform = `translate(${x}px, ${y}px)`;
+        });
+    </script>
+</body>
+</html>
